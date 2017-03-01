@@ -29,13 +29,14 @@ public class CustomerController {
 
 
     @RequestMapping("/customers/save")
-    public String process(){
+    public String process(Map<String, Object> model){
         repository.save(new Customer("Jack", "Smith"));
         repository.save(new Customer("Adam", "Johnson"));
         repository.save(new Customer("Kim", "Smith"));
         repository.save(new Customer("David", "Williams"));
         repository.save(new Customer("Peter", "Davis"));
-        return "Done";
+        model.put("customers",  repository.findAll());
+        return "customer/index";
     }
 
 
