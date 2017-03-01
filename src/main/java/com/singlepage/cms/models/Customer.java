@@ -1,70 +1,63 @@
 package com.singlepage.cms.models;
 
-/**
- * Created by alebedieva on 21.02.17.
- */
+import java.io.Serializable;
 
-import java.util.List;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
-public class Customer {
+@Table(name = "customer")
+public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @OneToMany(targetEntity=Purchase.class, fetch=FetchType.EAGER)
-    @JoinColumn(name="client_id")
+    private long id;
 
-    private Long id;
-    private String name;
-    private String address;
-    private String cardId;
-    private List<Purchase> purchases;
+    @Column(name = "firstname")
+    private String firstName;
 
-    public Long getId() {
-        return id;
+    @Column(name = "lastname")
+    private String lastName;
+
+    protected Customer() {}
+
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public void setId(Long id) {
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setNome(String name) {
-        this.name = name;
+    public void setFirstName(String title) {
+        this.firstName = title;
     }
 
-    public String getAddress() {
-        return address;
+    public String getLastName() {
+        return this.lastName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLastName(String title) {
+        this.lastName = title;
     }
 
-    public String getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(String cardId) {
-        this.cardId = cardId;
-    }
-
-    public List<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(List<Purchase> purchases) {
-        this.purchases = purchases;
+    @Override
+    public String toString() {
+        return String.format(
+                "Customer[id=%d, firstName='%s', lastName='%s']",
+                id, firstName, lastName);
     }
 }

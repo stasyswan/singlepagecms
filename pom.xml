@@ -73,6 +73,28 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
@@ -133,177 +155,3 @@
         </pluginRepository>
     </pluginRepositories>
 </project>
-
-
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
-<!--<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
-	<!--xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">-->
-	<!--<modelVersion>4.0.0</modelVersion>-->
-
-	<!--<groupId>com.singlepage.cms</groupId>-->
-	<!--<artifactId>singlepagecms</artifactId>-->
-	<!--<version>0.0.1-SNAPSHOT</version>-->
-	<!--<packaging>jar</packaging>-->
-
-	<!--<name>SinglePageCms</name>-->
-	<!--<description>Project for creating single page projects</description>-->
-
-	<!--<parent>-->
-		<!--<groupId>org.springframework.boot</groupId>-->
-		<!--<artifactId>spring-boot-starter-parent</artifactId>-->
-		<!--<version>1.5.1.RELEASE</version>-->
-		<!--<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
-	<!--</parent>-->
-
-	<!--<properties>-->
-		<!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-		<!--<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
-		<!--<java.version>1.8</java.version>-->
-	<!--</properties>-->
-
-	<!--<dependencies>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-data-rest</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.data</groupId>-->
-			<!--<artifactId>spring-data-rest-hal-browser</artifactId>-->
-		<!--</dependency>-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-freemarker</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-jdbc</artifactId>-->
-		<!--</dependency>-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-jersey</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-jooq</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-mail</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-mobile</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-mustache</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.retry</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-retry</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-security</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.session</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-session</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-social-facebook</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-social-linkedin</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-thymeleaf</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-validation</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-web</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-web-services</artifactId>-->
-		<!--</dependency>-->
-		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-			<!--&lt;!&ndash;<groupId>org.springframework.boot</groupId>&ndash;&gt;-->
-			<!--&lt;!&ndash;<artifactId>spring-boot-starter-websocket</artifactId>&ndash;&gt;-->
-		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-devtools</artifactId>-->
-			<!--<scope>runtime</scope>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>com.zaxxer</groupId>-->
-			<!--<artifactId>HikariCP</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.postgresql</groupId>-->
-			<!--<artifactId>postgresql</artifactId>-->
-			<!--<scope>runtime</scope>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.projectlombok</groupId>-->
-			<!--<artifactId>lombok</artifactId>-->
-			<!--<optional>true</optional>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-test</artifactId>-->
-			<!--<scope>test</scope>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.restdocs</groupId>-->
-			<!--<artifactId>spring-restdocs-mockmvc</artifactId>-->
-			<!--<scope>test</scope>-->
-		<!--</dependency>-->
-	<!--</dependencies>-->
-
-	<!--<build>-->
-		<!--<plugins>-->
-			<!--<plugin>-->
-				<!--<groupId>org.springframework.boot</groupId>-->
-				<!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-			<!--</plugin>-->
-			<!--<plugin>-->
-				<!--<artifactId>maven-resources-plugin</artifactId>-->
-				<!--<version>2.6</version>-->
-				<!--<executions>-->
-					<!--<execution>-->
-						<!--<id>copy-resources</id>-->
-						<!--<phase>validate</phase>-->
-						<!--<goals>-->
-							<!--<goal>copy-resources</goal>-->
-						<!--</goals>-->
-						<!--<configuration>-->
-							<!--<outputDirectory>${basedir}/target/classes/static</outputDirectory>-->
-							<!--<resources>-->
-								<!--<resource>-->
-									<!--<directory>src/main/webapp</directory>-->
-									<!--<filtering>true</filtering>-->
-								<!--</resource>-->
-							<!--</resources>-->
-						<!--</configuration>-->
-					<!--</execution>-->
-				<!--</executions>-->
-			<!--</plugin>-->
-		<!--</plugins>-->
-	<!--</build>-->
-
-
-<!--</project>-->

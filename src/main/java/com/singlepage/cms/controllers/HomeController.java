@@ -1,4 +1,4 @@
-package com.singlepage.cms;
+package com.singlepage.cms.controllers;
 
 import java.util.Map;
 
