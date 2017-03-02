@@ -3,7 +3,11 @@
 <%@ taglib uri="http://kwonnam.pe.kr/jsp/template-inheritance" prefix="layout"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<layout:extends name="/WEB-INF/layouts/application_layout.jsp">
+<layout:extends name="/WEB-INF/jsp/layouts/application_layout.jsp">
+    <layout:put block="header">
+        <li><a href="/">Home</a></li>
+        <li class="active"><a href="/customers/index">Customers</a></li>
+    </layout:put>
     <layout:put block="body">
         <div class="container">
             <div class="starter-template">

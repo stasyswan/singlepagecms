@@ -1,10 +1,7 @@
 package com.singlepage.cms.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.singlepage.cms.models.Customer;
 import com.singlepage.cms.repositories.CustomerRepository;
@@ -25,8 +22,11 @@ public class CustomerController {
         return "customer/index";
     }
 
-
-
+    @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
+    public String show(@PathVariable long id, Map<String, Object> model){
+        model.put("customer",  repository.findOne(id));
+        return "customer/show";
+    }
 
     @RequestMapping("/customers/save")
     public String process(Map<String, Object> model){
@@ -37,35 +37,5 @@ public class CustomerController {
         repository.save(new Customer("Peter", "Davis"));
         model.put("customers",  repository.findAll());
         return "customer/index";
-    }
-
-
-    @RequestMapping("/customers/findall")
-    public String findAll(){
-        String result = "<html>";
-
-        for(Customer cust : repository.findAll()){
-            result += "<div>" + cust.toString() + "</div>";
-        }
-
-        return result + "</html>";
-    }
-
-    @RequestMapping("/customers/findbyid")
-    public String findById(@RequestParam("id") long id){
-        String result = "";
-        result = repository.findOne(id).toString();
-        return result;
-    }
-
-    @RequestMapping("/customers/findbylastname")
-    public String fetchDataByLastName(@RequestParam("lastname") String lastName){
-        String result = "<html>";
-
-        for(Customer cust: repository.findByLastName(lastName)){
-            result += "<div>" + cust.toString() + "</div>";
-        }
-
-        return result + "</html>";
     }
 }

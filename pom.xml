@@ -144,7 +144,11 @@
                             <outputDirectory>${basedir}/target/classes/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/webapp/WEB-INF</directory>
+                                    <directory>src/main/webapp/WEB-INF/jsp</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/webapp/resources</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
