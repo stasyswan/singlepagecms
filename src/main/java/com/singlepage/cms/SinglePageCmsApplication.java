@@ -17,8 +17,4 @@ public class SinglePageCmsApplication extends SpringBootServletInitializer {
 		SpringApplication.run(SinglePageCmsApplication.class, args);
 	}
 
-//
-//	public static void main(String[] args) {
-//		SpringApplication.run(SinglePageCmsApplication.class, args);
-//	}
 }
