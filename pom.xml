@@ -116,7 +116,14 @@
             <artifactId>postgresql</artifactId>
             <version>9.4-1200-jdbc4</version>
         </dependency>
-	</dependencies>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+        </dependency>
+
+    </dependencies>
 	<build>
         <plugins>
             <!-- Package as an executable jar/war -->
