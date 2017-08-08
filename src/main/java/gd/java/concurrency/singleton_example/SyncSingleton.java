@@ -6,11 +6,11 @@ import java.util.concurrent.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 class SyncSingleton {
-    private static SyncSingleton instance;
+    private static volatile SyncSingleton instance;
 
     private SyncSingleton(){}
 
-    static synchronized SyncSingleton getInstance(){
+    static SyncSingleton getInstance(){
         if(instance == null){
             synchronized (SyncSingleton.class) {
                 if(instance == null){
