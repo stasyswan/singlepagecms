@@ -134,6 +134,11 @@
             <artifactId>junit-platform-launcher</artifactId>
             <version>1.0.0-M4</version>
         </dependency>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.64</version>
+        </dependency>
 
     </dependencies>
 
