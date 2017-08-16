@@ -4,6 +4,7 @@ import com.beust.jcommander.*;
 
 import gd.java.concurrency.jobmanager.job.FailsWithExceptionJob;
 import gd.java.concurrency.jobmanager.job.InfinityJob;
+import gd.java.concurrency.jobmanager.job.InterruptedJob;
 import gd.java.concurrency.jobmanager.job.LongRunningJob;
 
 import java.util.*;
@@ -16,6 +17,7 @@ import static gd.java.concurrency.jobmanager.Status.*;
 public class JobManager {
     Map<Integer, Job> allJobs = new HashMap<>();
     Map<Integer, Future> jobFuTures = new HashMap<>();
+    public volatile static Map<Integer, Thread> jobThreads = new HashMap<>();
 
     public void createJob(String type, int count){
         for (int i = 0; i <count ; i++) {
@@ -32,6 +34,9 @@ public class JobManager {
                 case WITH_EXCEPTION :
                     job = new FailsWithExceptionJob(id);
                     break;
+                case INTERRUPTED :
+                    job = new InterruptedJob(id);
+                    break;
             }
 
             allJobs.put(id, job);
@@ -46,7 +51,7 @@ public class JobManager {
                 Future future = executor.submit(currentJob.getTask());
                 jobFuTures.put(currentJob.getId(), future);
                 currentJob.changeStatus(Status.RUNNING);
-                System.out.println("Started Job with id: " + currentJob.getId());
+                System.out.println("Started Job with id: " + currentJob.getId() + " and type: " + currentJob.getType());
             }
         }
     }
@@ -60,6 +65,21 @@ public class JobManager {
             future.cancel(true);
             allJobs.get(id).changeStatus(Status.FINISHED);
             System.out.println("Cancelled Job with id: " + id);
+        }
+        for(Job job : allJobs.values()){
+            System.out.println("Job id: " + job.getId() + " type: " + job.getType() + " status: " + job.getStatus());
+        }
+    }
+
+    public void interruptJob(int id){
+        Future future = jobFuTures.get(id);
+        Job toInterruptJob = allJobs.get(id);
+        if(future == null) {
+            System.out.println("There is no running Job with id: " + id);
+        }
+        else {
+            jobThreads.get(id).interrupt();
+            toInterruptJob.changeStatus(Status.INTERRUPTED);
         }
         for(Job job : allJobs.values()){
             System.out.println("Job id: " + job.getId() + " type: " + job.getType() + " status: " + job.getStatus());
@@ -110,6 +130,7 @@ public class JobManager {
         System.out.println("start <job_type>");
         System.out.println("status <job_id>");
         System.out.println("stop <job_id>");
+        System.out.println("interrupt <job_id>");
         System.out.println("stop-all");
         System.out.println();
 
@@ -188,7 +209,7 @@ public class JobManager {
 
                     }
                     else {
-                        if(isTypeWrong(arr[1])){
+                        if(command.equals(START.toString()) && isTypeWrong(arr[1])){
                             System.out.println("Wrong job type");
                             break;
                         }
@@ -231,6 +252,8 @@ public class JobManager {
                     running = false;
                     jm.exit(executor);
                     break;
+                case INTERRUPT:
+                    jm.interruptJob(Integer.parseInt(parameter));
             }
         }
     }
