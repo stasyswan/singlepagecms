@@ -6,4 +6,9 @@ public class Service {
     public Service(String name){
         this.name = name;
     }
+
+    @Override
+    public String toString(){
+        return "Service " + name;
+    }
 }
