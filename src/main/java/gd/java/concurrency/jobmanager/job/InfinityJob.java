@@ -20,7 +20,10 @@ public class InfinityJob extends Job {
                 Thread.yield();
             }
             if(Thread.currentThread().isInterrupted()) {
-                this.changeStatus(Status.STOPPED);
+                synchronized (InfinityJob.this) {
+                    this.changeStatus(Status.STOPPED);
+                    notifyAll();
+                }
             }
             else
             {

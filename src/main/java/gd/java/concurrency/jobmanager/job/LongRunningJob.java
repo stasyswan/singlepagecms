@@ -27,45 +27,64 @@ public class LongRunningJob extends Job {
     private void loop() {
         for(int i = 0; i < 260000; i++) {
             if(Thread.currentThread().isInterrupted()) {
-                if(this.getStatus().equals(Status.RUNNING)) {
-                    this.changeStatus(Status.STOPPED);
+                synchronized (LongRunningJob.this) {
+                    if(this.getStatus().equals(Status.RUNNING)) {
+                        this.changeStatus(Status.STOPPED);
+                    }
+                    notifyAll();
                 }
+
                 return;
             }
             for (int j = 260000; j > 0; j--) {
                 if(Thread.currentThread().isInterrupted()){
-                    if(this.getStatus().equals(Status.RUNNING)) {
-                        this.changeStatus(Status.STOPPED);
+                    synchronized (LongRunningJob.this) {
+                        if(this.getStatus().equals(Status.RUNNING)) {
+                            this.changeStatus(Status.STOPPED);
+                        }
+                        notifyAll();
                     }
                     return;
                 }
                 int s = i + j;
                 for(int e = 0; e < 260000; e++) {
                     if(Thread.currentThread().isInterrupted()) {
-                        if(this.getStatus().equals(Status.RUNNING)) {
-                            this.changeStatus(Status.STOPPED);
+                        synchronized (LongRunningJob.this) {
+                            if(this.getStatus().equals(Status.RUNNING)) {
+                                this.changeStatus(Status.STOPPED);
+                            }
+                            notifyAll();
                         }
                         return;
                     }
                     for (int a = 260000; j > 0; j--) {
                         if(Thread.currentThread().isInterrupted()) {
-                            if(this.getStatus().equals(Status.RUNNING)) {
-                                this.changeStatus(Status.STOPPED);
+                            synchronized (LongRunningJob.this) {
+                                if(this.getStatus().equals(Status.RUNNING)) {
+                                    this.changeStatus(Status.STOPPED);
+                                }
+                                notifyAll();
                             }
                             return;
                         }
                         int d = i + j;
                         for(int w = 0; w < 260000; w++) {
                             if(Thread.currentThread().isInterrupted()) {
-                                if(this.getStatus().equals(Status.RUNNING)) {
-                                    this.changeStatus(Status.STOPPED);
+                                synchronized (LongRunningJob.this) {
+                                    if(this.getStatus().equals(Status.RUNNING)) {
+                                        this.changeStatus(Status.STOPPED);
+                                    }
+                                    notifyAll();
                                 }
                                 return;
                             }
                             for (int f = 260000; f > 0; f--) {
                                 if(Thread.currentThread().isInterrupted()) {
-                                    if(this.getStatus().equals(Status.RUNNING)) {
-                                        this.changeStatus(Status.STOPPED);
+                                    synchronized (LongRunningJob.this) {
+                                        if(this.getStatus().equals(Status.RUNNING)) {
+                                            this.changeStatus(Status.STOPPED);
+                                        }
+                                        notifyAll();
                                     }
                                     return;
                                 }
