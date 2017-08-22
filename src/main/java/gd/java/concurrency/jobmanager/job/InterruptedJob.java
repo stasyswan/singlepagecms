@@ -17,6 +17,7 @@ public class InterruptedJob extends Job {
 
     public Runnable getTask(){
         Runnable task = () -> {
+            this.changeStatus(Status.RUNNING);
             jobThreads.put(this.getId(), Thread.currentThread());
             try {
                 for (int i = 0; i < 5; i++) {
@@ -24,9 +25,13 @@ public class InterruptedJob extends Job {
                 }
             }
             catch (InterruptedException e) {
-                System.out.println("Job with id: " + this.getId() + " was interrupted");
+                synchronized (InterruptedJob.this) {
+                    this.changeStatus(Status.STOPPED);
+                    notifyAll();
+                }
                 Thread.currentThread().interrupt();
             }
+            if(this.getStatus().equals(Status.RUNNING))this.changeStatus(Status.FINISHED);
         };
         return task;
     }

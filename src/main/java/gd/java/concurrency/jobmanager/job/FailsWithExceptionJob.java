@@ -4,6 +4,8 @@ import gd.java.concurrency.jobmanager.Job;
 import gd.java.concurrency.jobmanager.Status;
 import gd.java.concurrency.jobmanager.Type;
 
+import static gd.java.concurrency.jobmanager.JobManager.jobThreads;
+
 public class FailsWithExceptionJob extends Job {
 
     public FailsWithExceptionJob(int id) {
@@ -12,6 +14,8 @@ public class FailsWithExceptionJob extends Job {
 
     public Runnable getTask(){
         Runnable task = () -> {
+            this.changeStatus(Status.RUNNING);
+            jobThreads.put(this.getId(), Thread.currentThread());
             try {
                 throw new RuntimeException();
             }

@@ -8,26 +8,33 @@
 package gd.java.concurrency.factory;
 
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ServiceFactoryImpl {
-    ConcurrentMap<String, Service> services = new ConcurrentHashMap<>();
-
+    private ConcurrentMap<String, Service> services = new ConcurrentHashMap<>();
+    private ReentrantLock locker = new ReentrantLock();
     // should be thread-safe
     // miminal blocking (for example, getService("a") shouldn't block getService("b))
     // lazy
-    public Service getService(String name) {
-       if(createService(name) == null){
-           System.out.println("Created service " + name);
-       }
-       else{
-           System.out.println("Got service " + name);
-       }
+    private Service getService(String name) {
+
+        if (!services.containsKey(name))  {
+            createService(name);
+            System.out.println("Created service " + name);
+        } else {
+            System.out.println("Got service " + name);
+        }
         return services.get(name);
     }
 
-    private Service createService(String name) {
-        return services.putIfAbsent(name, new Service(name));
+    private void createService(String name) {
+        locker.lock();
+        if (!services.containsKey(name)) {
+            services.put(name, new Service(name));
+        }
+        locker.unlock();
     }
+
 
     public static void main(String[] args) {
         ServiceFactoryImpl sfi = new ServiceFactoryImpl();
@@ -35,18 +42,16 @@ public class ServiceFactoryImpl {
         sfi.createService("name1");
         sfi.createService("name2");
 
-        ExecutorService executor = Executors.newFixedThreadPool(3);
+        ExecutorService executor = Executors.newFixedThreadPool(30);
 
-        executor.execute(() -> {
-            sfi.getService("name1");
-        });
-        executor.execute(() -> {
-            sfi.getService("name3");
-        });
-        executor.execute(() -> {
-            sfi.getService("name4");
-        });
+        for (int i = 0; i < 10; i++) {
+            executor.execute(() -> {
+                for (int j = 0; j < 10; j++) {
+                    sfi.getService("name" + j);
+                }
 
+            });
+        }
         try {
             executor.shutdown();
             executor.awaitTermination(5, TimeUnit.SECONDS);
@@ -55,12 +60,10 @@ public class ServiceFactoryImpl {
             System.err.println("tasks interrupted");
         }
         finally {
-
             if (!executor.isTerminated()) {
                 System.err.println("cancel non-finished tasks");
                 executor.shutdownNow();
             }
-            System.out.println("shutdown finished");
         }
     }
 }
