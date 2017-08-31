@@ -1,8 +1,8 @@
 package gd.java.concurrency.jobmanager;
 
-public abstract class Job {
+public abstract class Job implements Runnable {
     private int id;
-    private Status status;
+    private volatile Status status;
     private Type type;
 
     public Job(int id, Status status, Type type) {
@@ -11,13 +11,13 @@ public abstract class Job {
         this.type = type;
     }
 
-    public void changeStatus(Status newStatus){
+    public abstract void run();
+
+    protected void changeStatus(Status newStatus) {
         status = newStatus;
     }
 
-    public abstract Runnable getTask();
-
-    public Status getStatus(){
+    protected Status getStatus() {
         return status;
     }
 
@@ -25,7 +25,7 @@ public abstract class Job {
         return id;
     }
 
-    public Type getType() {
+    Type getType() {
         return type;
     }
 }

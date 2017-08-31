@@ -1,19 +1,20 @@
 package gd.java.concurrency.jobmanager;
 
-import com.beust.jcommander.*;
+import org.apache.commons.cli.*;
 
-@Parameters(separators = "=")
 public class Main {
-
-    @Parameter(names = { "--max-threads" }, required = true)
-    public static int maxThreads;
-
     public static void main(String[] args) {
-        Main main = new Main();
-        new JCommander(main, args);
+        CommandLineParser cmdLinePosixParser = new DefaultParser();
 
-        ConsoleInput ci = new ConsoleInput();
-        ci.printInfo();
-        ci. getCommand(maxThreads);
+        try {
+            ConsoleInput ci = new ConsoleInput();
+            CommandLine commandLine = cmdLinePosixParser.parse(ci.options(), args);
+            int maxThreads = Integer.parseInt(commandLine.getOptionValue("max-threads"));
+
+            ci.printInfo();
+            ci.getCommand(maxThreads);
+        } catch (NumberFormatException | ParseException e) {
+            System.out.println("Problem with program argument 'max-threads'");
+        }
     }
 }

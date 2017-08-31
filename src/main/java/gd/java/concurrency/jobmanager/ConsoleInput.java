@@ -1,190 +1,91 @@
 package gd.java.concurrency.jobmanager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static gd.java.concurrency.jobmanager.Command.*;
+import org.apache.commons.cli.*;
 
 class ConsoleInput {
-
-     void printInfo(){
+    void printInfo() {
         System.out.println("Possible commands:");
-        System.out.println("create <job_type> <jobs_count>");
-        System.out.println("start <job_type>");
-        System.out.println("status <job_id>");
-        System.out.println("stop <job_id>");
-        System.out.println("stopall");
+        System.out.println("-c create -t <job_type> -n <jobs_number>");
+        System.out.println("-c start -t <job_type>");
+        System.out.println("-c run -t <job_type>");
+        System.out.println("-c status -i <job_id>");
+        System.out.println("-c stop -i <job_id>");
+        System.out.println("-c stopall");
+        System.out.println("-c startall");
         System.out.println();
 
-        String msg = "Job Type: ";
+        StringBuilder msg = new StringBuilder("Job Types: ");
         for (Type type : Type.values()) {
-            msg += type.toString() + " ";
+            msg.append(type.toString()).append(" ");
         }
         System.out.println(msg);
+        System.out.println();
+
+        System.out.println("For example:");
+        System.out.println("-c create -t LONG_RUNNING -n 3");
+        System.out.println("-c create -t WITH_EXCEPTION -n 1");
+        System.out.println("-c create -t INFINITY -n 2");
+        System.out.println("-c create -t INTERRUPTED -n 3");
 
         System.out.println();
         System.out.println("App started to listen user's input");
         System.out.println();
     }
 
-     boolean isCommandWrong(String command){
-        boolean isWrong = false;
-        try{
-            Command.valueOf(command.toUpperCase());
-        }
-        catch (IllegalArgumentException e){
-            isWrong = true;
-        }
-        return  isWrong;
+    Options options() {
+        Options posixOptions = new Options();
+
+        Option option = new Option("m", "max-threads", true, "max threads");
+        option.setValueSeparator('=');
+        posixOptions.addOption(option);
+
+        posixOptions.addOption(new Option("c", "command", true, "Command"));
+        posixOptions.addOption(new Option("t", "type", true, "Command type"));
+        posixOptions.addOption(new Option("n", "number", true, "Number of jobs"));
+        posixOptions.addOption(new Option("i", "id", true, "Job ID"));
+
+        return posixOptions;
     }
 
-    static boolean isTypeWrong(String type){
-        boolean isWrong = false;
-        try{
-            Type.valueOf(type);
-        }
-        catch (IllegalArgumentException e){
-            isWrong = true;
-        }
-        return  isWrong;
-    }
-
-    void oneArgument(String command){
-        if (!command.isEmpty() &&
-            (command.equals(STATUS.toString()) ||
-            command.equals(STOP.toString()))){
-            System.out.println("Need to set job id");
-        }
-        else if (!command.isEmpty() &&
-            !command.equals(STOPALL.toString()) &&
-            !command.equals(STARTALL.toString())) {
-            System.out.println("Need to set job type");
-        }
-    }
-
-    String twoArguments(String command, String parameter){
-        if(isTypeWrong(parameter) && !command.equals(STOP.toString()) && !command.equals(STATUS.toString())){
-            System.out.println("Wrong job type");
-        }
-
-        else if (command.equals(CREATE.toString())) {
-            System.out.println("Need to set job type and count of jobs");
-        }
-        else {
-            return parameter;
-        }
-        return "";
-    }
-
-    String threeArgumentsParameter(String parameter){
-        if(isTypeWrong(parameter)){
-            System.out.println("Wrong job type");
-            return "";
-        }
-        return parameter;
-    }
-
-    int threeArgumentsCount(String count){
-        int c = 0;
-        try {
-            c = Integer.parseInt(count);
-        } catch (NumberFormatException e) {
-            System.out.println("Jobs count should be integer");
-        }
-        return c;
-    }
-
-    void getCommand(int maxThreads){
-        JobManager jm = new JobManager();
+    void getCommand(int maxThreads) {
         boolean running = true;
+
+        JobManager jm = new JobManager(maxThreads);
         Scanner sc = new Scanner(System.in);
-        ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
 
-         while(running){
-            String[] arr = sc.nextLine().split(" ");
-            String command = arr[0].toUpperCase();
-             String parameter = "";
-             int count = 0;
+        while (running) {
+            CommandLineParser cmdLinePosixParser = new DefaultParser();
 
-            if(command.equals("")){
-                continue;
-            }
+            try {
+                String[] args = sc.nextLine().split(" ");
+                CommandLine commandLine = cmdLinePosixParser.parse(options(), args);
 
-            if(isCommandWrong(command)) {
+                String[] commands = {"command", "type", "number", "id"};
+                HashMap params = new HashMap();
+
+                for (int i = 0; i < commands.length; i++) {
+                    if (commandLine.hasOption(commands[i])) {
+                        params.put(commands[i], commandLine.getOptionValue(commands[i]));
+                    }
+                }
+
+                try {
+                    Method commandMethod = JobManager.class.getMethod(
+                            params.get("command").toString(),
+                            HashMap.class
+                    );
+                    commandMethod.invoke(jm, params);
+                } catch (NoSuchMethodException |
+                        IllegalAccessException |
+                        InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } catch (IllegalArgumentException | ParseException e) {
                 System.out.println("Wrong command");
-                continue;
-            }
-
-            switch (arr.length) {
-                case 1:
-                    oneArgument(command);
-                    break;
-                case 2:
-                    parameter = twoArguments(command, arr[1]);
-                    break;
-                case 3:
-                    parameter = threeArgumentsParameter(arr[1]);
-                    count = threeArgumentsCount(arr[2]);
-                    break;
-            }
-
-             int id = 0;
-
-            switch (Command.valueOf(command)) {
-                case CREATE:
-                    if(!parameter.isEmpty() && count != 0) {
-                        jm.createJob(parameter, count);
-                    }
-                    break;
-                case RUN:
-                    if(!parameter.isEmpty()) {
-                        jm.runJob(executor, parameter);
-                    }
-                    break;
-                case STARTALL:
-                    for(Type type : Type.values()){
-                        jm.runJob(executor, type.toString());
-                    }
-                    break;
-                case START:
-                    if(!parameter.isEmpty()) {
-                        jm.startJob(executor, parameter);
-                    }
-                    break;
-                case STATUS:
-                    id = 0;
-                    try{
-                        if (!parameter.equals("")){
-                            id = Integer.parseInt(parameter);
-                        }
-                    }
-                    catch (NumberFormatException e) {
-                        System.out.println("Job id count should be integer");
-                    }
-                    if(id > 0) {
-                        jm.printJobStatus(id);
-                    }
-                    break;
-                case STOP:
-                    id = 0;
-                    try{
-                        if (!parameter.equals("")){
-                            id = Integer.parseInt(parameter);
-                        }
-                    }
-                    catch (NumberFormatException e) {
-                        System.out.println("Jobs count should be integer");
-                        break;
-                    }
-                    if(id > 0) {
-                        jm.stopJob(id);
-                    }
-                    break;
-                case STOPALL:
-                    running = false;
-                    jm.exit(executor);
-                    break;
             }
         }
     }

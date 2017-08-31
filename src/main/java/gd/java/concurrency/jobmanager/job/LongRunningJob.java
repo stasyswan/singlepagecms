@@ -4,97 +4,35 @@ import gd.java.concurrency.jobmanager.Job;
 import gd.java.concurrency.jobmanager.Status;
 import gd.java.concurrency.jobmanager.Type;
 
-import static gd.java.concurrency.jobmanager.JobManager.jobThreads;
+import java.util.Date;
+
+import static java.util.concurrent.TimeUnit.*;
 
 public class LongRunningJob extends Job {
-
     public LongRunningJob(int id) {
         super(id, Status.SCHEDULED, Type.LONG_RUNNING);
     }
 
-    public Runnable getTask(){
-        Runnable task = () -> {
-            this.changeStatus(Status.RUNNING);
-            jobThreads.put(this.getId(), Thread.currentThread());
-            loop();
-            if(!this.getStatus().equals(Status.STOPPED)) {
-                this.changeStatus(Status.FINISHED);
-            }
-        };
-        return task;
-    }
+    public void run() {
+        changeStatus(Status.RUNNING);
+        loop();
 
-    private void loop() {
-        for(int i = 0; i < 260000; i++) {
-            if(Thread.currentThread().isInterrupted()) {
-                synchronized (LongRunningJob.this) {
-                    if(this.getStatus().equals(Status.RUNNING)) {
-                        this.changeStatus(Status.STOPPED);
-                    }
-                    notifyAll();
-                }
-
-                return;
-            }
-            for (int j = 260000; j > 0; j--) {
-                if(Thread.currentThread().isInterrupted()){
-                    synchronized (LongRunningJob.this) {
-                        if(this.getStatus().equals(Status.RUNNING)) {
-                            this.changeStatus(Status.STOPPED);
-                        }
-                        notifyAll();
-                    }
-                    return;
-                }
-                int s = i + j;
-                for(int e = 0; e < 260000; e++) {
-                    if(Thread.currentThread().isInterrupted()) {
-                        synchronized (LongRunningJob.this) {
-                            if(this.getStatus().equals(Status.RUNNING)) {
-                                this.changeStatus(Status.STOPPED);
-                            }
-                            notifyAll();
-                        }
-                        return;
-                    }
-                    for (int a = 260000; j > 0; j--) {
-                        if(Thread.currentThread().isInterrupted()) {
-                            synchronized (LongRunningJob.this) {
-                                if(this.getStatus().equals(Status.RUNNING)) {
-                                    this.changeStatus(Status.STOPPED);
-                                }
-                                notifyAll();
-                            }
-                            return;
-                        }
-                        int d = i + j;
-                        for(int w = 0; w < 260000; w++) {
-                            if(Thread.currentThread().isInterrupted()) {
-                                synchronized (LongRunningJob.this) {
-                                    if(this.getStatus().equals(Status.RUNNING)) {
-                                        this.changeStatus(Status.STOPPED);
-                                    }
-                                    notifyAll();
-                                }
-                                return;
-                            }
-                            for (int f = 260000; f > 0; f--) {
-                                if(Thread.currentThread().isInterrupted()) {
-                                    synchronized (LongRunningJob.this) {
-                                        if(this.getStatus().equals(Status.RUNNING)) {
-                                            this.changeStatus(Status.STOPPED);
-                                        }
-                                        notifyAll();
-                                    }
-                                    return;
-                                }
-                                int h = i + j;
-                            }
-                        }
-                    }
-                }
-            }
+        if (!getStatus().equals(Status.STOPPED)) {
+            changeStatus(Status.FINISHED);
         }
     }
 
+    private void loop() {
+        long duration = MILLISECONDS.convert(60, MINUTES);
+        long start = new Date().getTime();
+
+        while (new Date().getTime() - start < duration) {
+            if (Thread.currentThread().isInterrupted()) {
+                if (getStatus().equals(Status.RUNNING)) {
+                    changeStatus(Status.STOPPED);
+                }
+                return;
+            }
+        }
+    }
 }

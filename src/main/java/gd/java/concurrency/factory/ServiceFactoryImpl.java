@@ -8,11 +8,12 @@
 package gd.java.concurrency.factory;
 
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ServiceFactoryImpl {
     private ConcurrentMap<String, Service> services = new ConcurrentHashMap<>();
-    private ReentrantLock locker = new ReentrantLock();
+    private ConcurrentMap<String, Lock> locks = new ConcurrentHashMap<>();
     // should be thread-safe
     // miminal blocking (for example, getService("a") shouldn't block getService("b))
     // lazy
@@ -28,11 +29,19 @@ public class ServiceFactoryImpl {
     }
 
     private void createService(String name) {
-        locker.lock();
-        if (!services.containsKey(name)) {
-            services.put(name, new Service(name));
+        locks.putIfAbsent(name, new ReentrantLock());
+
+        Lock lock = locks.get(name);
+
+        lock.lock();
+
+        try {
+            if (!services.containsKey(name)) {
+                services.put(name, new Service(name));
+            }
+        } finally {
+            lock.unlock();
         }
-        locker.unlock();
     }
 
 
