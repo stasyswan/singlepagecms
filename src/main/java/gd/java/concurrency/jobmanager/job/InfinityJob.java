@@ -11,16 +11,16 @@ public class InfinityJob extends Job {
     }
 
     public void run() {
-        changeStatus(Status.RUNNING);
+        setStatus(Status.RUNNING);
 
         while (!Thread.currentThread().isInterrupted()) {
             Thread.yield();
         }
 
         if (Thread.currentThread().isInterrupted()) {
-            changeStatus(Status.STOPPED);
+            setStatus(Status.STOPPED);
         } else {
-            changeStatus(Status.FINISHED);
+            setStatus(Status.FINISHED);
         }
     }
 }

@@ -11,12 +11,12 @@ public class FailsWithExceptionJob extends Job {
     }
 
     public void run() {
-        changeStatus(Status.RUNNING);
+        setStatus(Status.RUNNING);
 
         try {
             throw new RuntimeException();
         } finally {
-            changeStatus(Status.FAILED);
+            setStatus(Status.FAILED);
         }
     }
 }

@@ -9,6 +9,7 @@ public class CaughtExceptionsThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable r) {
         Thread t = new Thread(r);
         t.setUncaughtExceptionHandler(handler);
+
         return t;
     }
 }

@@ -14,15 +14,15 @@ public class InterruptedJob extends Job {
     }
 
     public void run() {
-        this.changeStatus(Status.RUNNING);
+        this.setStatus(Status.RUNNING);
 
         try {
             for (int i = 0; i < 5; i++) TimeUnit.HOURS.sleep(1);
         } catch (InterruptedException e) {
-            changeStatus(Status.STOPPED);
+            setStatus(Status.STOPPED);
             Thread.currentThread().interrupt();
         }
 
-        if (this.getStatus().equals(Status.RUNNING)) changeStatus(Status.FINISHED);
+        if (this.getStatus().equals(Status.RUNNING)) setStatus(Status.FINISHED);
     }
 }

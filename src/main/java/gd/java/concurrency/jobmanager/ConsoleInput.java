@@ -79,6 +79,7 @@ class ConsoleInput {
                 );
                 commandMethod.invoke(jm, params);
 
+                if (params.get("command").equals("stopall")) running = false;
             } catch (IllegalArgumentException |
                     ParseException |
                     NoSuchMethodException |

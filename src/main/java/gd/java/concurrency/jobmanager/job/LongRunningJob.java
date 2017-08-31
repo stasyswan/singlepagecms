@@ -14,11 +14,11 @@ public class LongRunningJob extends Job {
     }
 
     public void run() {
-        changeStatus(Status.RUNNING);
+        setStatus(Status.RUNNING);
         loop();
 
         if (!getStatus().equals(Status.STOPPED)) {
-            changeStatus(Status.FINISHED);
+            setStatus(Status.FINISHED);
         }
     }
 
@@ -29,7 +29,7 @@ public class LongRunningJob extends Job {
         while (new Date().getTime() - start < duration) {
             if (Thread.currentThread().isInterrupted()) {
                 if (getStatus().equals(Status.RUNNING)) {
-                    changeStatus(Status.STOPPED);
+                    setStatus(Status.STOPPED);
                 }
                 return;
             }
