@@ -79,7 +79,7 @@ class JobManager {
 
     public void startall(HashMap<String, String> param) {
         for (Type t : Type.values()) {
-            HashMap type = new HashMap();
+            HashMap<String, String> type = new HashMap<>();
             type.put("type", t.toString());
             run(type);
         }
@@ -113,16 +113,6 @@ class JobManager {
     }
 
     public void stopall(HashMap<String, String> param) {
-        exit();
-    }
-
-    private void printAllJobStatuses() {
-        for (Job job : allJobs.values()) {
-            System.out.println("Job id: " + job.getId() + " type: " + job.getType() + " status: " + job.getStatus());
-        }
-    }
-
-    private void exit() {
         System.out.println("attempt to shutdown executor");
 
         executor.shutdown();
@@ -135,5 +125,11 @@ class JobManager {
         }
 
         System.out.println("shutdown finished");
+    }
+
+    private void printAllJobStatuses() {
+        for (Job job : allJobs.values()) {
+            System.out.println("Job id: " + job.getId() + " type: " + job.getType() + " status: " + job.getStatus());
+        }
     }
 }

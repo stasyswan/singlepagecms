@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Scanner;
+
 import org.apache.commons.cli.*;
 
 class ConsoleInput {
@@ -63,28 +64,27 @@ class ConsoleInput {
             try {
                 String[] args = sc.nextLine().split(" ");
                 CommandLine commandLine = cmdLinePosixParser.parse(options(), args);
+                HashMap<String, String> params = new HashMap<>();
 
-                String[] commands = {"command", "type", "number", "id"};
-                HashMap params = new HashMap();
-
-                for (int i = 0; i < commands.length; i++) {
-                    if (commandLine.hasOption(commands[i])) {
-                        params.put(commands[i], commandLine.getOptionValue(commands[i]));
+                for (Option o : options().getOptions()) {
+                    if (commandLine.hasOption(o.getLongOpt()) &&
+                            !o.getLongOpt().equals("max-threads")) {
+                        params.put(o.getLongOpt(), commandLine.getOptionValue(o.getLongOpt()));
                     }
                 }
 
-                try {
-                    Method commandMethod = JobManager.class.getMethod(
-                            params.get("command").toString(),
-                            HashMap.class
-                    );
-                    commandMethod.invoke(jm, params);
-                } catch (NoSuchMethodException |
-                        IllegalAccessException |
-                        InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            } catch (IllegalArgumentException | ParseException e) {
+                Method commandMethod = JobManager.class.getMethod(
+                        params.get("command"),
+                        HashMap.class
+                );
+                commandMethod.invoke(jm, params);
+
+            } catch (IllegalArgumentException |
+                    ParseException |
+                    NoSuchMethodException |
+                    IllegalAccessException |
+                    InvocationTargetException |
+                    NullPointerException e) {
                 System.out.println("Wrong command");
             }
         }
